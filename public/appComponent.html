@@ -1,0 +1,62 @@
+<p-menubar>
+    <ul>
+        <li> <a data-icon="fa-plus" (click)="clickNew()"><span>Add</span></a>
+            <ul>
+                <li><a data-icon="fa-plus" (click)="clickNew()"><span>New</span></a></li>
+                <li><a data-icon="fa-arrow-right" (click)="clickFromARP()"><span>From ARP</span></a></li>
+             </ul>
+        </li>
+        <li> <a data-icon="fa-play" (click)="clickStart()">Start</a></li>
+        <li> <a data-icon="fa-pause" (click)="clickSleep()">Stop</a>
+            <ul>
+                <li><a data-icon="fa-pause" (click)="clickSleep()">Sleep</a></li>
+                <li><a data-icon="fa-power-off" (click)="clickShutdown()">Shutdown</a></li>
+                <li><a data-icon="fa-refresh" (click)="clickReset()">Reset</a></li>
+                <li><a data-icon="fa-minus-circle" (click)="clickHibernate()">Hibernate</a></li>
+            </ul>
+        </li>
+        <li> <a data-icon="fa-cog" (click)="clickConfig()">Config</a></li>
+    </ul>
+</p-menubar>
+
+<p-growl [value]="msgs"></p-growl>
+
+<edit-config
+        [isConfigVisible]="isConfigVisible" (closeForm)="onCloseConfigForm($event)" [config]="config">
+</edit-config>
+
+<edit-machine
+        [isEditVisible]="isEditVisible" (closeForm)="onCloseEditForm($event)" [editMachine]="editMachine" [isNew]="isNew">
+</edit-machine>
+<delete-machine [isDeleteVisible]="isDeleteVisible" (closeForm)="onCloseDeleteForm($event)" [deleteMachine]="deleteMachine"></delete-machine>
+
+<fromarp [isARPVisible]="isARPVisible" (closeForm)="onCloseFromARPForm($event)"></fromarp>
+
+<p-dataTable [value]="machines"  selectionMode="single" [(selection)]="editMachine" (onRowDblclick)="onRowDblClick($event)">
+    <p-column styleClass="col-icon">
+        <template let-m="rowData">
+            <p-checkbox name="machinegroup" value="{{m.name}}" [(ngModel)]="selectedMachines"></p-checkbox>
+        </template>
+    </p-column>
+    <p-column field="name" header="Name" styleClass="col-item"></p-column>
+    <p-column field="mac" header="MAC" styleClass="col-item"></p-column>
+    <p-column field="port" header="Port" styleClass="col-item"></p-column>
+    <p-column field="destination" header="Destination" styleClass="col-item"></p-column>
+    <p-column field="sshPort" header="SSH Port" styleClass="col-item"></p-column>
+    <p-column field="sshStatus" header="SSH Status" styleClass="col-item">
+        <template let-col let-dm="rowData">
+            <span [style.color]="(dm[col.field]) ? 'green' : 'red' ">{{ (dm[col.field]) ? "Up" : "Down" }}</span>
+        </template>
+    </p-column>
+    <p-column field="pingStatus" header="Ping Status" styleClass="col-item">
+        <template let-col let-dm="rowData">
+            <span [style.color]="(dm[col.field]) ? 'green' : 'red' ">{{ (dm[col.field]) ? "Up" : "Down" }}</span>
+        </template>
+    </p-column>
+    <p-column  styleClass="col-icon">
+        <template let-dm="rowData">
+            <i class="fa fa-close" (click)="clickDeleteMachine(dm)" style="cursor:pointer"></i>
+            <!--<button type="text" pButton (click)="clickDeleteMachine(dm)" icon="fa-close" (iconPos)="center"></button>-->
+        </template>
+    </p-column>
+</p-dataTable>
