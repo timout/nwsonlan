@@ -1,7 +1,7 @@
 const Client = require('ssh2').Client;
 const fs = require('fs');
 
-const logger=require('winston');
+const logger = require('./log');
 
 const SLEEP = Symbol("sleep");
 const RESET = Symbol("reset");

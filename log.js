@@ -22,7 +22,7 @@ const logger = new (winston.Logger)({
             level: "debug",
             timestamp: tsFormat,
             maxsize: 1000000,
-            maxFiles: 5,
+            maxFiles: 3,
             handleExceptions: true,
             humanReadableUnhandledException: true
         })

@@ -3,7 +3,7 @@ const path = require('path');
 const os = require("os");
 const util = require("util");
 const mkdirp = require('mkdirp');
-const logger=require('winston');
+const logger = require('./log');
 
 class Config {
     constructor(path, cfg) {

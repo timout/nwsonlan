@@ -1,6 +1,6 @@
 "use strict";
 
-const logger=require('winston');
+const logger=require("./log.js");
 const fs = require("fs");
 const os = require("os");
 const dgram = require('dgram');
@@ -8,6 +8,7 @@ const net = require('net');
 const Buffer = require('buffer').Buffer;
 const cp = require('child_process');
 const tcpp = require('tcp-ping');
+const util = require('util');
 
 const IPV4 = /([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})/;
 const MAC = /([0-9a-f]{1,2}[:\-][0-9a-f]{1,2}[:\-][0-9a-f]{1,2}[:\-][0-9a-f]{1,2}[:\-][0-9a-f]{1,2}[:\-][0-9a-f]{1,2})/;
@@ -17,8 +18,8 @@ const MAC_SIZE = 6;
 const MAGIC_WORD_SIZE = (1 + 16) * MAC_SIZE;
 
 const ARP_FILE = "/proc/net/arp";
-const NUMBER_OF_POCKETS = 3;
-const INTERVAL = 100;
+const NUMBER_OF_POCKETS = 12;
+const INTERVAL = 50;
 
 var findPattern = (pattern, str) => (pattern.exec(str) || [null])[0];
 
@@ -34,7 +35,7 @@ var createMagicPacket = (macStr) => {
 };
 
 var createSocket = (address) => {
-    logger.debug("creating socket");
+    logger.debug(`creating socket ${JSON.stringify(address)}`);
     const socket = dgram.createSocket('udp4'); //net.isIPv6(address.destination) ? 'udp6' :
     return Promise.resolve(socket);
 };
@@ -63,7 +64,7 @@ var series = (func, count, sleepTime) => {
 var createSendFunction = (magicPacket, address, socket) => {
     return () => {
         return new Promise((resolve, reject) => {
-            logger.debug(address);
+            logger.info(`sending wol packet to ${JSON.stringify(address)}`);
             socket.send(magicPacket, 0, magicPacket.length, address.port, address.destination, (err) => {
                 if (err) {
                     reject(err)
@@ -126,6 +127,7 @@ class NetUtil {
             return new Promise((resolve, reject) => {
                 var ps = cp.spawn('/bin/ping', args);
                 ps.on('error', (e) => {
+                    logger.error(e);
                     res.pingStatus = false;
                     resolve(res);
                 });
