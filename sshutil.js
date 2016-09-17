@@ -1,6 +1,8 @@
 const Client = require('ssh2').Client;
 const fs = require('fs');
 
+const logger=require('winston');
+
 const SLEEP = Symbol("sleep");
 const RESET = Symbol("reset");
 const HIBERNATE = Symbol("hibernate");
@@ -57,26 +59,26 @@ class SSHUtil {
         var conn = new Client();
         return new Promise( (resolve, reject) => {
             conn.on('ready', function() {
-                console.log('Client :: ready');
+                logger.info('Client :: ready');
                 conn.exec(command, (err, stream) =>{
                     if (err) {
-                        console.log(err);
+                        logger.error(err);
                         reject(err);
                     } else {
                         var msg = "";
                         stream.on('close', (code, signal) => {
-                            console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
+                            logger.info('Stream :: close :: code: ' + code + ', signal: ' + signal);
                             if ( code == 0 ) {
                                 resolve("")
                             } else {
-                                reject(`Sleep status code=[${code}], msg=[${data}]`)
+                                reject(`Sleep status code=[${code}]`)
                             }
                             conn.end();
                         }).on('data', (data) => {
-                            console.log('STDOUT: ' + data);
+                            logger.info(data);
                         }).stderr.on('data', (data) => {
                             msg = data;
-                            console.log('STDERR: ' + data);
+                            logger.error(data);
                         });
                     }
                 });

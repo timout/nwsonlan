@@ -1,6 +1,6 @@
 "use strict";
 
-const debug = require('debug')('server');
+const logger = require('./log');
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -50,15 +50,21 @@ app.use('/libs/@angular', express.static('node_modules/@angular'));
 app.use('/libs/angular2-in-memory-web-api', express.static('node_modules/angular2-in-memory-web-api'));
 app.use('/libs/primeui', express.static('node_modules/primeui'));
 app.use('/libs/primeng', express.static('node_modules/primeng'));
+// app.use('/libs/primeui', express.static('node_modules/primeui'));
 
 
 router.use((req, res, next) => {
-    console.warn(req.method + "	" + req.url + "	with	" + JSON.stringify(req.body));
+    logger.warn(req.method + "	" + req.url + "	with	" + JSON.stringify(req.body));
     next();
 });
 
 router.get('/', (req, res) => {
     res.json({message: 'hello	world!'});
+});
+
+router.get('/app/exit', (req, res) => {
+    res.json({message: 'See you!'});
+    process.exit(0)
 });
 
 router.get('/machines', (req, res) => {
@@ -78,14 +84,14 @@ router.get('/config', (req, res) => {
 });
 
 router.put('/config', (req, res) => {
-    console.log("update config");
-    console.log(util.inspect(req.body));
+    logger.info("update config");
+    logger.debug(util.inspect(req.body));
     var cfg = configFromBody(req);
     config.updateCfg(cfg).then(() => {
-        console.log("ok");
+        logger.log("config was updated");
         res.json(config.cfg);
     }).catch((err) => {
-        console.log(util.inspect(err));
+        logger.error(err);
         res.json(config.cfg);
         //res.json() TODO: send error
     });
@@ -94,34 +100,33 @@ router.put('/config', (req, res) => {
 });
 
 router.post('/machines/:name?', (req, res) => {
-    console.log("add");
-    console.log(util.inspect(req.body));
+    logger.info("add");
+    logger.debug(util.inspect(req.body));
     var name = req.params.name;
-    console.log(name);
+    logger.debug(name);
     if (!name) res.json(config.machines);    
     var m = machineFromBody(req);
     config.add(m).then(() => {
-        console.log("ok");
+        logger.debug("ok");
         res.json(config.machines);
     }).catch((err) => {
-        console.log(util.inspect(err));
+        logger.error(err);
         res.json(config.machines);
         //res.json() TODO: send error
     });
 });
 
 router.put('/machines/:name?', (req, res) => {
-    console.log("update");
-    console.log(util.inspect(req.body));
+    logger.debug(util.inspect(req.body));
     var name = req.params.name;
-    console.log(name);
+    logger.info(`update ${name}`);
     if (!name) res.json(config.machines);
     var m = machineFromBody(req);
     config.update(name, m).then(() => {
-        console.log("ok");
+        logger.debug("ok");
         res.json(config.machines);
     }).catch((err) => {
-        console.log(util.inspect(err));
+        logger.error(err);
         res.json(config.machines);
         //res.json() TODO: send error
     });
@@ -129,13 +134,13 @@ router.put('/machines/:name?', (req, res) => {
 
 router.delete('/machines/:name?', (req, res) => {
     var name = req.params.name;
-    debug(`deleting ${name}`);
+    logger.debug(`deleting ${name}`);
     config.delete(name).then(() => { res.json(config.machines); });
 });
 
 router.post('/start', (req, res) => {
-    console.log("start");
-    console.log(util.inspect(req.body));
+    logger.info("start");
+    logger.debug(util.inspect(req.body));
     const machines = findFromRequest(req);
     if (machines.length == 0) {
         res.json("");
@@ -145,12 +150,14 @@ router.post('/start', (req, res) => {
         });
         Promise.all(p)
             .then((err) => {
-                if (err) console.log(err);
-                console.log("done");
+                if (err && err.length > 0 ) {
+                    err.forEach( e => { if ( e ) console.log(e); } );
+                }
+                logger.info("done");
                 res.json("");
             })
             .catch((err) => {
-                console.log(err);
+                logger.error(err);
                 res.json("");
             });
     }
@@ -168,7 +175,7 @@ app.use('/api', router);
 configFactory.then((cfg) => { //As soon as
     config = cfg;
     app.listen(port);
-    console.log('Listen:	' + port);
+    logger.info('Listen:	' + port);
     setStatusCheck();
 });
 
@@ -196,12 +203,11 @@ var findFromRequest = (req) => {
 };
 
 var sshOp = (op, req, res) => {
-    console.log(op);
-    console.log("kk");
-    console.log(util.inspect(req.body));
+    logger.info(op);
+    logger.debug(util.inspect(req.body));
     const machines = findFromRequest(req);
     var p = sshUtil.op(op, machines, config);
-    Promise.all(p).then(() => { res.json(""); }).catch((err) => { console.log(err); res.json(err); });
+    Promise.all(p).then(() => { res.json(""); }).catch((err) => { logger.error(err); res.json(err); });
 };
 
 var setStatusCheck = () => {
@@ -209,7 +215,7 @@ var setStatusCheck = () => {
         clearInterval(statusInterval);
     }
     statusInterval = setInterval( () => {
-        console.log("check machines status");
-        netutil.pingAll(config.machines).then( (status) => { machineStatus = status; console.log(machineStatus); });
+        logger.info("check machines status");
+        netutil.pingAll(config.machines).then( (status) => { machineStatus = status; logger.info(machineStatus); });
     },config.checkTimeMs);
 };

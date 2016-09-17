@@ -3,7 +3,7 @@ const path = require('path');
 const os = require("os");
 const util = require("util");
 const mkdirp = require('mkdirp');
-const debug = require('debug')('fileutil');
+const logger=require('winston');
 
 class Config {
     constructor(path, cfg) {
@@ -73,7 +73,7 @@ class Config {
                     writeFileSync(this._path, this._cfg);
                     return true;
                 } else {
-                    debug(`Error: ${this._path} was deleted!`);
+                    logger.error(`${this._path} was deleted!`);
                     return makeDir(this._path).then((res) => {
                         writeFileSync(this._path, this._cfg);
                         return true;
@@ -112,7 +112,7 @@ var init = (filepath) => {
             }
         })
         .catch((err) => {
-            console.log(util.inspect(err));
+            logger.error(err);
             process.exit(1);
         });
 };
@@ -134,7 +134,7 @@ var isFileExists = (filepath) => {
 
 var createFile = (filepath) => {
     return makeDir(filepath).then((res) => {
-        debug(res);
+        logger.debug(res);
         var cfg = createDefaultConfig();
         writeFileSync(filepath, cfg);
         return cfg;
@@ -144,7 +144,7 @@ var createFile = (filepath) => {
 var makeDir = (filepath) => {
     return new Promise((resolve, reject) => {
         var dir = path.dirname(filepath);
-        debug(dir + " was created");
+        logger.debug(dir + " was created");
         mkdirp(dir, (err) => {
             if (err) {
                 reject(err)

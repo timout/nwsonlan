@@ -1,8 +1,8 @@
 "use strict";
 
+const logger=require('winston');
 const fs = require("fs");
 const os = require("os");
-const debug = require('debug')('util');
 const dgram = require('dgram');
 const net = require('net');
 const Buffer = require('buffer').Buffer;
@@ -28,15 +28,13 @@ var createMagicPacket = (macStr) => {
         return parseInt(s, 16);
     }));
     for (let i = MAC_SIZE; i < buffer.length; i += MAC_SIZE) {
-        console.log(i);
         macBuf.copy(buffer, i);
     }
-    console.log(buffer);
     return buffer;
 };
 
 var createSocket = (address) => {
-    console.log("creating socket");
+    logger.debug("creating socket");
     const socket = dgram.createSocket('udp4'); //net.isIPv6(address.destination) ? 'udp6' :
     return Promise.resolve(socket);
 };
@@ -65,7 +63,7 @@ var series = (func, count, sleepTime) => {
 var createSendFunction = (magicPacket, address, socket) => {
     return () => {
         return new Promise((resolve, reject) => {
-            //console.log(address);
+            logger.debug(address);
             socket.send(magicPacket, 0, magicPacket.length, address.port, address.destination, (err) => {
                 if (err) {
                     reject(err)
@@ -96,7 +94,7 @@ class NetUtil {
                     return ( findPattern(INCOMLITE, line) ) ? null : {ip: ip, mac: mac};
                 }).filter((line) => line != null);
         } catch (err) {
-            debug(err);
+            logger.error(err);
             return [];
         }
     };
@@ -117,7 +115,7 @@ class NetUtil {
             tcpp.probe(machine.destination, machine.sshPort, (err, available) => {
                 //console.log(`${machine.destination} - ssh ${available}`);
                 if (err) {
-                    console.log(err);
+                    logger.error(err);
                     resolve({name:machine.name, sshStatus: false})
                 } else {
                     resolve({name:machine.name, sshStatus: available})
@@ -149,6 +147,7 @@ class NetUtil {
         var socket;
         return createSocket(address.destination).then((s) => {
             socket = s;
+            logger.debug("socket created");
             const sendPackage = createSendFunction(magicPacket, address, socket);
             return series(sendPackage, NUMBER_OF_POCKETS, INTERVAL);
         }).catch((err) => {
