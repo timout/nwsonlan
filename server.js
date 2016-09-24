@@ -42,15 +42,13 @@ app.use('/', express.static('public'));
 app.use('/libs', express.static('node_modules/systemjs/dist'));
 app.use('/libs', express.static('node_modules/zone.js/dist'));
 app.use('/libs', express.static('node_modules/reflect-metadata'));
+app.use('/libs/core-js', express.static('node_modules/core-js'));
 app.use('/libs/rxjs', express.static('node_modules/rxjs'));
-app.use('/libs', express.static('node_modules/es6-shim'));
 app.use('/libs', express.static('node_modules/font-awesome'));
-
 app.use('/libs/@angular', express.static('node_modules/@angular'));
 app.use('/libs/angular2-in-memory-web-api', express.static('node_modules/angular2-in-memory-web-api'));
-app.use('/libs/primeui', express.static('node_modules/primeui'));
 app.use('/libs/primeng', express.static('node_modules/primeng'));
-// app.use('/libs/primeui', express.static('node_modules/primeui'));
+app.use('/libs/primeui', express.static('node_modules/primeui'));
 
 
 router.use((req, res, next) => {

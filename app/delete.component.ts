@@ -1,11 +1,8 @@
 import {Component,EventEmitter, Input, Output} from '@angular/core';
-import {Dialog, Footer, Button, InputText} from 'primeng/primeng';
 import {Machine} from "./machine";
-import {MachineService} from "./machineservice";
+
 @Component({
     selector: 'delete-machine',
-    directives:[Dialog,Footer,Button, InputText],
-    providers:[MachineService],
     template:`
         <p-dialog id="deletedialog"
            header='' 

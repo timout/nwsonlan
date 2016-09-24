@@ -1,14 +1,8 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import { FORM_DIRECTIVES } from '@angular/common';
-import {Dialog, Footer, Button, InputText} from 'primeng/primeng';
-import {MachineService} from "./machineservice";
-import {ROUTER_DIRECTIVES} from '@angular/router';
 import {Config} from "./config";
 
 @Component({
     selector: 'edit-config',
-    directives:[Dialog,Footer,Button, InputText, ROUTER_DIRECTIVES,FORM_DIRECTIVES],
-    providers:[MachineService],
     template:`
         <p-dialog id="configdialog" 
             [width]="400"
@@ -19,13 +13,15 @@ import {Config} from "./config";
          <table>
            <tr>
              <td><span [style.color]="'blue'">User Name</span></td>
-             <td><input id="name" type="text" size="20" pInputText [(ngModel)]="editConfig.userName" placeholder="User Name"/></td>
+             <td><input id="name" type="text" size="20" pInputText [(ngModel)]="editConfig.userName" 
+             name="userName" placeholder="User Name"/></td>
            </tr>
            <tr>
              <td><span [style.color]=" (checkTime.valid) ? 'blue' : 'red'">Check Time(s)</span></td>
              <td>
                <input id="checkTime" type="text" size="6" pInputText 
-                  [(ngModel)]="editConfig.checkTime" ngControl="checkTime" #checkTime="ngForm"
+                  [(ngModel)]="editConfig.checkTime" 
+                  name="checkTime" #checkTime="ngModel"
                   required placeholder="Check Time (s)" pattern="[0-9]+"/>
                   <i class="fa fa-minus-square-o" (click)="checkTimeMinus()" style="cursor:pointer"></i>
                   <i class="fa fa-plus-square-o" (click)="checkTimePlus()" style="cursor:pointer"></i>
@@ -34,7 +30,8 @@ import {Config} from "./config";
            <tr>
              <td><span [style.color]="'blue'">SSH Key Path</span></td>
              <td>
-               <input id="sshKeyPath" type="text" size="25" pInputText [(ngModel)]="editConfig.sshKeyPath" placeholder="Path"/>
+               <input id="sshKeyPath" type="text" size="25" pInputText [(ngModel)]="editConfig.sshKeyPath" 
+               name="path" placeholder="Path"/>
              </td>
            </tr>
          </table>         
@@ -54,7 +51,7 @@ export class ConfigComponent {
     @Input() isConfigVisible:boolean;
     editConfig:Config = new Config();
 
-    constructor(private machineService:MachineService) {
+    constructor() {
     }
 
     onBeforeShow(){

@@ -1,13 +1,10 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import { FORM_DIRECTIVES } from '@angular/common';
 import {Dialog, Footer, Button, InputText} from 'primeng/primeng';
 import {Machine} from "./machine";
 import {MachineService} from "./machineservice";
-import {ROUTER_DIRECTIVES} from '@angular/router';
+
 @Component({
     selector: 'edit-machine',
-    directives:[Dialog,Footer,Button, InputText, ROUTER_DIRECTIVES,FORM_DIRECTIVES],
-    providers:[MachineService],
     template:`
         <p-dialog id="editdialog" 
             [header]=" (isNew) ? 'New Machine' : 'Edit Machine'" 
@@ -19,13 +16,15 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
              <td><span [style.color]=" (name.valid) ? 'blue' : 'red'">Name</span></td>
              <td>
                <input id="name" type="text" size="20" 
-               pInputText [(ngModel)]="machine.name" ngControl="name" required #name="ngForm" placeholder="Name"/>
+               pInputText [(ngModel)]="machine.name" 
+               name="name" required #name="ngModel" placeholder="Name"/>
               </td>
            </tr>
            <tr>
              <td><span [style.color]=" (mac.valid) ? 'blue' : 'red'">MAC</span></td>
              <td><input id="mac" pInputText type="text" size="20"  
-                        [(ngModel)]="machine.mac" ngControl="mac" #mac="ngForm" placeholder="MAC Address"
+                        [(ngModel)]="machine.mac" 
+                        name="mac" #mac="ngModel" placeholder="MAC Address"
                         required pattern="^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$"/>
               </td>
            </tr>
@@ -33,7 +32,8 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
              <td><span [style.color]=" (port.valid) ? 'blue' : 'red'">Port</span></td>
              <td>
                <input id="port" type="text" size="6" pInputText 
-                  [(ngModel)]="machine.port" ngControl="port" #port="ngForm"
+                  [(ngModel)]="machine.port" 
+                  name="port" #port="ngModel"
                   required placeholder="Port" pattern="[0-9]+"/>
                   <i class="fa fa-minus-square-o" (click)="portMinus()" style="cursor:pointer"></i>
                   <i class="fa fa-plus-square-o" (click)="portPlus()" style="cursor:pointer"></i>
@@ -45,7 +45,8 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
              <td><span [style.color]=" (sshPort.valid) ? 'blue' : 'red'">SSH Port</span></td>
              <td>
                <input id="sshPort" type="text" size="6" pInputText 
-                  [(ngModel)]="machine.sshPort" ngControl="sshPort" #sshPort="ngForm"
+                  [(ngModel)]="machine.sshPort" 
+                  name="sshPort" #sshPort="ngModel"
                   required placeholder="Port" pattern="[0-9]+"/>
                   <i class="fa fa-minus-square-o" (click)="sshPortMinus()" style="cursor:pointer"></i>
                   <i class="fa fa-plus-square-o" (click)="sshPortPlus()" style="cursor:pointer"></i>
@@ -55,7 +56,8 @@ import {ROUTER_DIRECTIVES} from '@angular/router';
              <td><span [style.color]=" (destination.valid) ? 'blue' : 'red'">Destination</span></td>
              <td>
                <input id="destination" type="text" size="20" pInputText 
-                      [(ngModel)]="machine.destination" ngControl="destination" #destination="ngForm"
+                      [(ngModel)]="machine.destination" 
+                      name="destination" #destination="ngModel"
                       required placeholder="Destination" 
                       pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"/>
              </td>

@@ -1,12 +1,9 @@
 import {Component,EventEmitter} from '@angular/core';
-import {Dialog, Footer, Button, InputText, DataTable, Column} from 'primeng/primeng';
 import {Machine} from "./machine";
 import {MachineService} from "./machineservice";
-import {ROUTER_DIRECTIVES} from '@angular/router';
+
 @Component({
     selector: 'fromarp',
-    directives:[Dialog,Footer,Button,DataTable,Column, ROUTER_DIRECTIVES],
-    providers:[MachineService],
     inputs: ['isARPVisible'],
     outputs: ['closeForm'],
     template:`
