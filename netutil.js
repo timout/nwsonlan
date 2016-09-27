@@ -18,8 +18,6 @@ const MAC_SIZE = 6;
 const MAGIC_WORD_SIZE = (1 + 16) * MAC_SIZE;
 
 const ARP_FILE = "/proc/net/arp";
-const NUMBER_OF_POCKETS = 12;
-const INTERVAL = 50;
 
 var findPattern = (pattern, str) => (pattern.exec(str) || [null])[0];
 
@@ -144,14 +142,14 @@ class NetUtil {
      * @param address as a structure {mac, destination, port}
      * @returns Promise
      */
-    wake(address) {
+    wake(address, config) {
         const magicPacket = createMagicPacket(address.mac);
         var socket;
         return createSocket(address.destination).then((s) => {
             socket = s;
             logger.debug("socket created");
             const sendPackage = createSendFunction(magicPacket, address, socket);
-            return series(sendPackage, NUMBER_OF_POCKETS, INTERVAL);
+            return series(sendPackage, config.pocketNum, config.pocketInterval);
         }).catch((err) => {
             return err;
         }).then((err) => {

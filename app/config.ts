@@ -6,11 +6,15 @@ export class Config {
     private _userName: string;
     private _checkTime: number;
     private _sshKeyPath: string;
+    private _pocketNum: number;
+    private _pocketInterval: number;
 
     constructor(){
         this._userName = "";
         this._sshKeyPath= "";
         this._checkTime = 20;
+        this._pocketNum = 3;
+        this._pocketInterval = 50;
     }
 
     clone() : Config {
@@ -18,6 +22,8 @@ export class Config {
         c.userName = this.userName;
         c.sshKeyPath = this.sshKeyPath;
         c.checkTime = this.checkTime;
+        c.pocketNum = this.pocketNum;
+        c.pocketInterval = this.pocketInterval;
         return c;
     }
 
@@ -37,7 +43,6 @@ export class Config {
         return this._checkTime * 1000;
     }
 
-
     set checkTime(value:number) {
         this._checkTime = value;
     }
@@ -50,12 +55,30 @@ export class Config {
         this._sshKeyPath = value;
     }
 
+    get pocketNum(): number {
+        return this._pocketNum;
+    }
+
+    set pocketNum(value: number) {
+        this._pocketNum = value;
+    }
+
+    get pocketInterval(): number {
+        return this._pocketInterval;
+    }
+
+    set pocketInterval(value: number) {
+        this._pocketInterval = value;
+    }
+
     static create(c:any) : Config {
         var cfg:Config = new Config();
         if ( c ) {
-            if ( c.userName ) cfg.userName = c.userName;
-            if ( c.sshKeyPath ) cfg.sshKeyPath = c.sshKeyPath;
-            if ( c.checkTime ) cfg.checkTime = c.checkTime;
+            if (c.userName) cfg.userName = c.userName;
+            if (c.sshKeyPath) cfg.sshKeyPath = c.sshKeyPath;
+            if (c.checkTime) cfg.checkTime = c.checkTime;
+            if (c.pocketNum) cfg.pocketNum = c.pocketNum;
+            if (c.pocketInterval) cfg.pocketInterval = c.pocketInterval;
         }
         return cfg;
     }

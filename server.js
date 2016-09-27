@@ -144,7 +144,7 @@ router.post('/start', (req, res) => {
         res.json("");
     } else {
         var p = machines.map((m) => {
-            return netutil.wake(m);
+            return netutil.wake(m, config);
         });
         Promise.all(p)
             .then((err) => {
@@ -191,7 +191,9 @@ function configFromBody(req) {
     return {
         userName: req.body._userName,
         checkTime: req.body._checkTime,
-        sshKeyPath: req.body._sshKeyPath
+        sshKeyPath: req.body._sshKeyPath,
+        pocketNum: req.body._pocketNum,
+        pocketInterval: req.body._pocketInterval
     }
 }
 

@@ -127,7 +127,10 @@ export class MainComponent {
         var index = this.machines.indexOf(machine, 0);
         if (index > -1) {
             this.machines.splice(index, 1);
-            this.machineService.delete(machine).subscribe(ms => { this.machines = ms;} );
+            this.machineService.delete(machine).subscribe(ms => {
+                this.machines = ms;
+                this.removeFromSelected(machine.name);
+            });
         }
         console.log(event);
     }
@@ -185,9 +188,16 @@ export class MainComponent {
                     }
                 });
                 this.machines = cp;
-                this.timerToken = setTimeout( checkStatus, this.config.checkTimeMs);
+                this.timerToken = window.setTimeout( checkStatus, this.config.checkTimeMs);
             });
         };
-        this.timerToken = setTimeout( checkStatus, this.config.checkTimeMs);
+        this.timerToken = window.setTimeout( checkStatus, this.config.checkTimeMs);
+    }
+
+    private removeFromSelected(m: string) {
+        let i = this.selectedMachines.indexOf(m);
+        if (i > -1) {
+            this.selectedMachines.splice(i,1);
+        }
     }
 }

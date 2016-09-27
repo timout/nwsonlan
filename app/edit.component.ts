@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {Dialog, Footer, Button, InputText} from 'primeng/primeng';
 import {Machine} from "./machine";
-import {MachineService} from "./machineservice";
 
 @Component({
     selector: 'edit-machine',
@@ -31,25 +29,18 @@ import {MachineService} from "./machineservice";
            <tr>
              <td><span [style.color]=" (port.valid) ? 'blue' : 'red'">Port</span></td>
              <td>
-               <input id="port" type="text" size="6" pInputText 
-                  [(ngModel)]="machine.port" 
-                  name="port" #port="ngModel"
+               <input id="port" type="number"  min="1" max="65535" step="1" size="6" pInputText 
+                  [(ngModel)]="machine.port"  name="port" #port="ngModel"
                   required placeholder="Port" pattern="[0-9]+"/>
-                  <i class="fa fa-minus-square-o" (click)="portMinus()" style="cursor:pointer"></i>
-                  <i class="fa fa-plus-square-o" (click)="portPlus()" style="cursor:pointer"></i>
-               <!--<button pButton type="button" (click)="portMinus()" icon="fa-minus" iconPos="left"></button>-->
-               <!--<button pButton type="button" (click)="portPlus()" icon="fa-plus" iconPos="right"></button>-->
-             </td>
+              </td>            
            </tr> 
            <tr>
              <td><span [style.color]=" (sshPort.valid) ? 'blue' : 'red'">SSH Port</span></td>
              <td>
-               <input id="sshPort" type="text" size="6" pInputText 
+               <input id="sshPort" type="number" min="1" max="65535" step="1" size="6" pInputText 
                   [(ngModel)]="machine.sshPort" 
                   name="sshPort" #sshPort="ngModel"
                   required placeholder="Port" pattern="[0-9]+"/>
-                  <i class="fa fa-minus-square-o" (click)="sshPortMinus()" style="cursor:pointer"></i>
-                  <i class="fa fa-plus-square-o" (click)="sshPortPlus()" style="cursor:pointer"></i>
              </td>
            </tr>             
            <tr>
@@ -80,7 +71,7 @@ export class EditComponent {
     @Input() isEditVisible:boolean;
     machine:Machine = new Machine();
 
-    constructor(private machineService:MachineService) {
+    constructor() {
     }
 
     onBeforeShow(){
@@ -91,34 +82,6 @@ export class EditComponent {
     onAfterHide(){
         //console.log("hidden");
         this.clean();
-    }
-
-    sshPortMinus() {
-        if ( ! this.machine.sshPort ) this.machine.sshPort = 0;
-        if ( this.machine.sshPort > 0 ) {
-            this.machine.sshPort -= 1;
-        }
-    }
-
-    sshPortPlus() {
-        if ( ! this.machine.sshPort ) this.machine.sshPort = 0;
-        if ( this.machine.sshPort < 65535  ) {
-            this.machine.sshPort += 1;
-        }
-    }
-
-    portMinus() {
-        if ( ! this.machine.port ) this.machine.port = 0;
-        if ( this.machine.port > 0 ) {
-            this.machine.port -= 1;
-        }
-    }
-
-    portPlus() {
-        if ( ! this.machine.port ) this.machine.port = 0;
-        if ( this.machine.port < 65535  ) {
-            this.machine.port += 1;
-        }
     }
 
     submit() {

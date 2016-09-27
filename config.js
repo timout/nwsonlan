@@ -16,7 +16,13 @@ class Config {
     }
     
     get cfg() {
-        return { userName: this._cfg.userName, checkTime: this._cfg.checkTime, sshKeyPath: this._cfg.sshKeyPath }
+        return {
+            userName: this._cfg.userName,
+            checkTime: this._cfg.checkTime,
+            sshKeyPath: this._cfg.sshKeyPath,
+            pocketNum: this._cfg.pocketNum,
+            pocketInterval: this._cfg.pocketInterval
+        }
     }
 
     get sshKeyPath() {
@@ -31,10 +37,20 @@ class Config {
         return this._cfg.checkTime * 1000;
     }
 
+    get pocketNum() {
+        return this._cfg.pocketNum;
+    }
+
+    get pocketInterval() {
+        return this._cfg.pocketInterval;
+    }
+
     updateCfg(cfg) {
         this._cfg.userName = cfg.userName;
         this._cfg.checkTime = cfg.checkTime;
         this._cfg.sshKeyPath = cfg.sshKeyPath;
+        this._cfg.pocketNum = cfg.pocketNum;
+        this._cfg.pocketInterval = cfg.pocketInterval;
         return this._save();
     }
 
@@ -95,8 +111,10 @@ exports.create = (filepath) => {
 var createDefaultConfig = () => {
     return {
         checkTime: 20,
-        userName: "timout",
-        sshKeyPath: "/home/timout/.ssh/id_rsa",
+        userName: "",
+        sshKeyPath: "",
+        pocketNum: 3,
+        pocketInterval: 50,
         machines: []
     }
 };
