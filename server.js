@@ -93,8 +93,6 @@ router.put('/config', (req, res) => {
         res.json(config.cfg);
         //res.json() TODO: send error
     });
-
-    res.json(config.cfg);
 });
 
 router.post('/machines/:name?', (req, res) => {
@@ -181,6 +179,7 @@ function machineFromBody(req) {
     return {
         name: req.body._name,
         mac: req.body._mac,
+        ipaddress: req.body._ipaddress,
         port: req.body._port,
         sshPort: req.body._sshPort,
         destination: req.body._destination
@@ -193,7 +192,9 @@ function configFromBody(req) {
         checkTime: req.body._checkTime,
         sshKeyPath: req.body._sshKeyPath,
         pocketNum: req.body._pocketNum,
-        pocketInterval: req.body._pocketInterval
+        pocketInterval: req.body._pocketInterval,
+        bindPort:req.body._bindPort,
+        bindAddress:req.body._bindAddress
     }
 }
 

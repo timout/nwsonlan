@@ -27,6 +27,16 @@ import {Machine} from "./machine";
               </td>
            </tr>
            <tr>
+             <td><span [style.color]=" (ipaddress.valid) ? 'blue' : 'red'">IP Address</span></td>
+             <td>
+               <input id="ipaddress" type="text" size="20" pInputText 
+                      [(ngModel)]="machine.ipaddress" 
+                      name="ipaddress" #ipaddress="ngModel"
+                      required placeholder="IP Address" 
+                      pattern="^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"/>
+             </td>
+           </tr>           
+           <tr>
              <td><span [style.color]=" (port.valid) ? 'blue' : 'red'">Port</span></td>
              <td>
                <input id="port" type="number"  min="1" max="65535" step="1" size="6" pInputText 

@@ -21,7 +21,9 @@ class Config {
             checkTime: this._cfg.checkTime,
             sshKeyPath: this._cfg.sshKeyPath,
             pocketNum: this._cfg.pocketNum,
-            pocketInterval: this._cfg.pocketInterval
+            pocketInterval: this._cfg.pocketInterval,
+            bindPort: this._cfg.bindPort,
+            bindAddress: this._cfg.bindAddress
         }
     }
 
@@ -45,12 +47,22 @@ class Config {
         return this._cfg.pocketInterval;
     }
 
+    get bindPort() {
+        return this._cfg.bindPort;
+    }
+
+    get bindAddress() {
+        return this._cfg.bindAddress;
+    }
+
     updateCfg(cfg) {
         this._cfg.userName = cfg.userName;
         this._cfg.checkTime = cfg.checkTime;
         this._cfg.sshKeyPath = cfg.sshKeyPath;
         this._cfg.pocketNum = cfg.pocketNum;
         this._cfg.pocketInterval = cfg.pocketInterval;
+        this._cfg.bindPort = cfg.bindPort;
+        this._cfg.bindAddress = cfg.bindAddress;
         return this._save();
     }
 
@@ -115,6 +127,8 @@ var createDefaultConfig = () => {
         sshKeyPath: "",
         pocketNum: 3,
         pocketInterval: 50,
+        bindPort: 18081,
+        bindAddress: "0.0.0.0",
         machines: []
     }
 };

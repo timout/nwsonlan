@@ -22,6 +22,7 @@ import {CheckboxModule} from 'primeng/primeng';
 import {DataTableModule,SharedModule} from 'primeng/primeng';
 import {GrowlModule} from 'primeng/primeng';
 import {ButtonModule} from 'primeng/primeng';
+import {TabViewModule} from 'primeng/primeng';
 
 import { routing, appRoutingProviders, routingComponents }  from './app.routing';
 
@@ -39,6 +40,7 @@ import { routing, appRoutingProviders, routingComponents }  from './app.routing'
         DialogModule,
         CheckboxModule,
         GrowlModule,
+        TabViewModule,
         routing
     ],
     declarations: [

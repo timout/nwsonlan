@@ -8,6 +8,8 @@ export class Config {
     private _sshKeyPath: string;
     private _pocketNum: number;
     private _pocketInterval: number;
+    private _bindPort: number;
+    private _bindAddress: string;
 
     constructor(){
         this._userName = "";
@@ -15,6 +17,8 @@ export class Config {
         this._checkTime = 20;
         this._pocketNum = 3;
         this._pocketInterval = 50;
+        this._bindPort = 18081;
+        this._bindAddress="0.0.0.0";
     }
 
     clone() : Config {
@@ -24,6 +28,8 @@ export class Config {
         c.checkTime = this.checkTime;
         c.pocketNum = this.pocketNum;
         c.pocketInterval = this.pocketInterval;
+        c.bindPort = this.bindPort;
+        c.bindAddress = this.bindAddress;
         return c;
     }
 
@@ -71,6 +77,22 @@ export class Config {
         this._pocketInterval = value;
     }
 
+    get bindPort(): number {
+        return this._bindPort;
+    }
+
+    set bindPort(value: number) {
+        this._bindPort = value;
+    }
+
+    get bindAddress(): string {
+        return this._bindAddress;
+    }
+
+    set bindAddress(value: string) {
+        this._bindAddress = value;
+    }
+
     static create(c:any) : Config {
         var cfg:Config = new Config();
         if ( c ) {
@@ -79,6 +101,8 @@ export class Config {
             if (c.checkTime) cfg.checkTime = c.checkTime;
             if (c.pocketNum) cfg.pocketNum = c.pocketNum;
             if (c.pocketInterval) cfg.pocketInterval = c.pocketInterval;
+            if (c.bindPort) cfg.bindPort = c.bindPort;
+            if (c.bindAddress) cfg.bindAddress = c.bindAddress;
         }
         return cfg;
     }

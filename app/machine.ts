@@ -4,6 +4,7 @@
 export class Machine {
     private _name: string;
     private _mac: string;
+    private _ipaddress: string;
     private _port: number;
     private _destination: string;
     private _sshPort;
@@ -13,9 +14,10 @@ export class Machine {
     constructor(){
         this._name = "";
         this._mac = "";
+        this._ipaddress = "";
         this._port = 9;
         this._sshPort = 22;
-        this._destination = "255.255.255.0";
+        this._destination = "255.255.255.255";
         this._sshStatus = false;
         this._pingStatus = false;
     }
@@ -26,6 +28,7 @@ export class Machine {
         m.sshPort = this.sshPort;
         m.name = this.name;
         m.mac = this.mac;
+        m.ipaddress = this.ipaddress;
         m.destination = this.destination;
         return m;
     }
@@ -45,6 +48,14 @@ export class Machine {
 
     set mac(value:string) {
         this._mac = value;
+    }
+
+    get ipaddress(): string {
+        return this._ipaddress;
+    }
+
+    set ipaddress(value: string) {
+        this._ipaddress = value;
     }
 
     get port():number {
@@ -95,6 +106,7 @@ export class Machine {
             if ( m.port ) machine.port = m.port;
             if ( m.destination ) machine.destination = m.destination;
             if ( m.sshPort ) machine.sshPort = m.sshPort;
+            if ( m.ipaddress ) machine.ipaddress = m.ipaddress;
         }
         return machine;
     }

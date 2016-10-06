@@ -86,7 +86,7 @@ class SSHUtil {
                 console.log(err);
                 reject(err);
             }).connect({
-                host: machine.destination,
+                host: machine.ipaddress,
                 port: machine.sshPort,
                 username: config.userName,
                 privateKey: fs.readFileSync(config.sshKeyPath)

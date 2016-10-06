@@ -40,6 +40,7 @@ export class FromArpComponent {
             this.machines = arr.map( (m) => {
                 var machine = new Machine();
                 machine.name = m.ip;
+                machine.ipaddress = m.ip;
                 machine.mac = m.mac;
                 return machine;
             });

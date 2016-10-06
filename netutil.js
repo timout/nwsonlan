@@ -32,10 +32,23 @@ var createMagicPacket = (macStr) => {
     return buffer;
 };
 
-var createSocket = (address) => {
-    logger.debug(`creating socket ${JSON.stringify(address)}`);
+var createSocket = (address, config) => {
+    logger.debug(`creating socket ${JSON.stringify(address)}, ${config.bindPort}, ${config.bindAddress}`);
     const socket = dgram.createSocket('udp4'); //net.isIPv6(address.destination) ? 'udp6' :
-    return Promise.resolve(socket);
+    return new Promise((resolve, reject) => {
+        socket.bind(config.bindPort, config.bindAddress);
+        socket.once('listening', () => {
+            socket.setBroadcast(true);
+            logger.debug(`socket ${JSON.stringify(address)} was created`);
+            resolve(socket)
+        });
+        socket.on('error', (error) => {
+            logger.error(JSON.stringify(error));
+            socket.close();
+            reject(error)
+        });
+    });
+    //return Promise.resolve(socket);
 };
 
 var sleep = (sleepTime) => {
@@ -111,7 +124,7 @@ class NetUtil {
      **/
     ping(machine) {
         return new Promise((resolve, reject) => {
-            tcpp.probe(machine.destination, machine.sshPort, (err, available) => {
+            tcpp.probe(machine.ipaddress, machine.sshPort, (err, available) => {
                 //console.log(`${machine.destination} - ssh ${available}`);
                 if (err) {
                     logger.error(err);
@@ -121,7 +134,7 @@ class NetUtil {
                 }
             });
         }).then((res) => {
-            var args = ["-q", "-n", "-w 2", "-c 1", machine.destination];
+            var args = ["-q", "-n", "-w 2", "-c 1", machine.ipaddress];
             return new Promise((resolve, reject) => {
                 var ps = cp.spawn('/bin/ping', args);
                 ps.on('error', (e) => {
@@ -145,7 +158,7 @@ class NetUtil {
     wake(address, config) {
         const magicPacket = createMagicPacket(address.mac);
         var socket;
-        return createSocket(address.destination).then((s) => {
+        return createSocket(address.destination, config).then((s) => {
             socket = s;
             logger.debug("socket created");
             const sendPackage = createSendFunction(magicPacket, address, socket);
