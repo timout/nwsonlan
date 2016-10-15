@@ -22,7 +22,7 @@ var cli = cla([
         alias: 'p',
         defaultValue: defaultConfigPath
     },
-    {name: 'port', type: Number, defaultValue: 18080}
+    {name: 'port', type: Number, defaultValue: 28080}
 ]);
 
 const options = cli.parse();
@@ -141,13 +141,10 @@ router.post('/start', (req, res) => {
     if (machines.length == 0) {
         res.json("");
     } else {
-        var p = machines.map((m) => {
-            return netutil.wake(m, config);
-        });
-        Promise.all(p)
+        netutil.wakeAll(machines, config)
             .then((err) => {
-                if (err && err.length > 0 ) {
-                    err.forEach( e => { if ( e ) console.log(e); } );
+                if (err) {
+                    lgger.error(err);
                 }
                 logger.info("done");
                 res.json("");

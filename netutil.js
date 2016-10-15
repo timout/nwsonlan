@@ -152,7 +152,23 @@ class NetUtil {
 
     /**
      * Send wake on lan packet
+     * @param machines as array of machines structure {mac, destination, port}
+     * @param config as configuration
+     * @returns Promise
+     */
+    wakeAll(machines, config) {
+        logger.info(`wake all ${util.inspect(machines)}`);
+        return machines.reduce( (pre, cur) => {
+            return pre.then( (err) => {
+                return ( err ) ? err : this.wake(cur, config)
+            })
+        }, Promise.resolve());
+    };
+
+    /**
+     * Send wake on lan packet
      * @param address as a structure {mac, destination, port}
+     * @param config as configuration
      * @returns Promise
      */
     wake(address, config) {

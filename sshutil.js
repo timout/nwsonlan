@@ -68,7 +68,7 @@ class SSHUtil {
                         var msg = "";
                         stream.on('close', (code, signal) => {
                             logger.info('Stream :: close :: code: ' + code + ', signal: ' + signal);
-                            if ( code == 0 ) {
+                            if ( code == undefined || code == null || code == 0 ) {
                                 resolve("")
                             } else {
                                 reject(`Sleep status code=[${code}]`)
